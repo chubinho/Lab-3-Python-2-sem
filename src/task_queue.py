@@ -1,5 +1,5 @@
 from typing import Iterable, Iterator, Optional
-from task import Task
+from src.task import Task
 
 
 class TaskQueue:
