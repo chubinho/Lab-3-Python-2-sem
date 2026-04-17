@@ -24,7 +24,6 @@ def test_queue_length(sample_tasks):
 
 def test_iteration_protocol():
     """Проверка корректной работы StopIteration."""
-    # Создаем задачу через payload, как требует твой класс
     task = Task(1, {"status": "new", "priority": 1, "description": "Test"})
     queue = TaskQueue([task])
     it = iter(queue)
@@ -34,15 +33,14 @@ def test_iteration_protocol():
 
 
 def test_repeatable_iteration(sample_tasks):
-    """Проверка возможности повторного обхода."""
+    """Проверка возможности повторного обхода"""
     queue = TaskQueue(sample_tasks)
     assert len(list(queue)) == len(list(queue)) == 3
 
 
 def test_lazy_filter_status(sample_tasks):
-    """Проверка ленивой фильтрации по статусу."""
+    """Проверка ленивой фильтрации по статусу"""
     queue = TaskQueue(sample_tasks)
-    # Твой дескриптор StatusDescriptor гарантирует наличие атрибута .status
     new_tasks = list(queue.filter_by_status("new"))
     assert len(new_tasks) == 2
     for t in new_tasks:
@@ -50,15 +48,14 @@ def test_lazy_filter_status(sample_tasks):
 
 
 def test_lazy_filter_priority(sample_tasks):
-    """Проверка фильтрации по приоритету."""
+    """Проверка фильтрации по приоритету"""
     queue = TaskQueue(sample_tasks)
-    # PriorityDescriptor валидирует диапазон 1-10
     high_priority = list(queue.filter_by_priority(3))
-    assert len(high_priority) == 2  # Задачи с приоритетом 5 и 3
+    assert len(high_priority) == 2 
 
 
 def test_generator_is_lazy(sample_tasks):
-    """Проверка, что фильтр возвращает генератор (ленивость)."""
+    """Проверка, что фильтр возвращает генератор (ленивость)"""
     queue = TaskQueue(sample_tasks)
     gen = queue.filter_by_status("new")
     assert hasattr(gen, "__next__")
