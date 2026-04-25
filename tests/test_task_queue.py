@@ -6,7 +6,7 @@ from src.task_queue import TaskQueue
 @pytest.fixture
 def sample_tasks():
     """
-    Фикстура с набором задач, соответствующая твоему __init__.
+    Фикстура с набором задач, соответствующая __init__.
     Конструктор Task принимает (id: int, payload: dict).
     """
     return [

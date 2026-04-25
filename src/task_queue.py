@@ -3,7 +3,7 @@ from src.task import Task
 
 
 class TaskQueue:
-    """Коллекция для хранения и ленивой фильтрации зада"""
+    """Коллекция для хранения и ленивой фильтрации задач"""
 
     def __init__(self, tasks: Optional[list['Task']] = None) -> None:
         self._tasks = tasks if tasks is not None else []
