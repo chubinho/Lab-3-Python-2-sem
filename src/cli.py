@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Optional
 import typer
 import logging
 
@@ -6,6 +7,7 @@ from src.sources.file_source import FileSource
 from src.sources.generator_source import GeneratorConfig, GeneratorSource
 from src.sources.api_mock_source import APIMockSource
 from src.consumer import TaskConsumer
+from src.task_queue import TaskQueue, TaskQueueIterator
 from src.logger import set_logger
 
 
@@ -14,7 +16,23 @@ logger = set_logger(logging.INFO)
 
 app = typer.Typer(help="Платформа обработки задач")
 
-
+@app.command()
+def process(count: int = typer.Option(10, "--count", "-n", help="Сколько задач сгенерировать"), status: Optional[str] = typer.Option(None, "--status", help= "Фильтр по статусу"), priority: Optional[int] = typer.Option(None, "--priority", help="Мин приоритет")):
+    consumer = TaskConsumer()
+    source = GeneratorSource(GeneratorConfig(count=count))
+    queue = TaskQueue()
+    tasks = consumer.accept_tasks(source)
+    for t in tasks: 
+        queue + t
+    typer.echo(f"Загружено в очередь {len(queue)} задач")
+    result = queue
+    if status:
+        result = queue.filter_by_status(status)
+    if priority:
+        result = [t for t in result if t.priority >= priority]
+    typer.echo(f"Результат фильтрации:")
+    for task in result:
+        typer.echo(f" Задача {task.id}, {task.priority},  {task.status}")    
 @app.command()
 def file(path: Path = typer.Argument(..., help="Путь к JSON-файлу")):
     """
